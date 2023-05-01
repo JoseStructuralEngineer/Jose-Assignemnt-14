@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+    <head>
+        <title>Welcome</title>
+        <script  type="text/javascript">
+
+              var user = sessionStorage.getItem("user");
+
+              if (user == null) {
+			    var input = "";
+                var inLoginUser = true;
+                while(inLoginUser) {
+                    input = window.prompt("What is your name?", "Guest");
+                    console.log(input);
+                    if (input != null && input != "") {
+
+                        inLoginUser = false;
+                    }
+                }
+
+
+
+                fetch('/users', {
+                  method: 'POST',
+                  body: input
+                })
+                .then(response => response.json())
+                .then(user => {
+                    console.log(user.name)
+                     sessionStorage.setItem('user',JSON.stringify(user));
+                     console.log(user.name)
+                })
+
+			} else {
+				user = JSON.parse(sessionStorage.getItem("user"))
+				console.log(user)
+			}
+
+
+          </script>
+
+    </head>
+<body>
+    <h2>Join A Channel</h2>
+    <div th:each="channel : ${channels}">
+        <a th:href="@{/channels/{channelId}(channelId=${channel.channelId})}" th:text="${channel.channelName}"></a>
+    </div>
+
+</body>
+</html>
